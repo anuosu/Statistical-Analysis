@@ -1,0 +1,22 @@
+##load data
+bone <- read.table("T1-8.DAT")
+names(bone) <- c("dom_r", "rad", "dom_h", "hum", "dom_u", "uln")
+attach(bone)
+summary(bone)
+##A. Suggest and fit appropiate linear models
+model <- lm(dom_r ~ dom_h+hum+dom_u+uln)
+summary(model)
+##check if predictor variables have an association with the dependent
+variable
+pairs(bone, panel=panel.smooth)
+##check if the assumptions are met
+hist(residuals(model))
+## The ulna is not significant, we drop it:
+model1 <- update(model,~.-hum)
+summary(model1)
+## Another interaction term is not significant, we drop it:
+model2 <- update(model1,~.-uln)
+summary(model2)
+##best fit model is model <- lm(dom_r ~ dom_h+dom_u)
+#B. Analyze the residuals
+plot(model2)
