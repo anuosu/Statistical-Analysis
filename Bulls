@@ -1,0 +1,64 @@
+##load data
+bulls <- read.table("T1-10.DAT")
+##setting the column names
+names(bulls) <- c("breed", "sale_pr", "yr_hgt", "fr_body", "prct", "frame",
+"bk_fat", "sale_ht", "sale_wt")
+attach(bulls)
+summary(bulls)
+##Setting the independent and dependent variables
+model1 <- lm(sale_pr~breed + yr_hgt + fr_body + prct + frame + bk_fat +
+sale_ht + sale_wt)
+summary(model1)
+##Model is significant overall (p < 2.231e-10 in the last line). Four
+variables are significant
+###A. Suggest and fit appropiate linear models
+##The interaction term is not significant, we drop it:
+model2 <- update(model1,~.-sale_wt)
+summary(model2)
+## Another interaction term is not significant, we drop it:
+model3 <- update(model2,~.-bk_fat)
+summary(model3)
+## Another interaction term is not significant, we drop it:
+model4 <- update(model3,~.-fr_body)
+summary(model4)
+## Another interaction term is not significant, we drop it:
+model5 <- update(model4,~.-yr_hgt)
+summary(model5)
+##best fit model is model1 <- lm(sale_pr~breed + prct + frame + bk_fat +
+sale_ht)
+##B. construct the 95% prediction interval
+##Prediction of an observation and model at a new point
+##New observation: breed = 5, yr_hgt = 48.7, fr_body = 990, prct = 74.0,
+frame = 7, bk_fat = .18, sale_ht = 54.2, sale_wt = 1450
+predict(model5, newdata=data.frame(breed = 5, yr_hgt = 48.7, fr_body = 990,
+prct = 74.0, frame = 7, bk_fat = .18,
+                                   sale_ht = 54.2, sale_wt = 1450),
+int="pred")
+##95% confidence level using the best fitted model
+predict(model5, newdata=data.frame(breed = 5, yr_hgt = 48.7, fr_body = 990,
+prct = 74.0, frame = 7, bk_fat = .18,
+                                   sale_ht = 54.2, sale_wt = 1450),
+int="confidence")
+#C. Analyze the residuals
+plot(model5)
+#D. Repeat analysis in Part a using Log
+##take the log of the sales price
+y = log(sale_pr)
+model7 <- lm(y~breed + yr_hgt + fr_body + prct + frame + bk_fat + sale_ht +
+sale_wt)
+summary(model7)
+model8 <- update(model7,~.-sale_wt)
+summary(model8)
+## Another interaction term is not significant, we drop it:
+model9 <- update(model8,~.-bk_fat)
+summary(model9)
+## Another interaction term is not significant, we drop it:
+model10 <- update(model9,~.-fr_body)
+summary(model10)
+## Another interaction term is not significant, we drop it:
+model11 <- update(model10,~.-yr_hgt)
+summary(model11)
+##check the residuals
+plot(model11)
+model12 <- lm(y~breed + prct + frame + sale_ht, subset=(1:length(bulls)!=54))
+summary(model12)
