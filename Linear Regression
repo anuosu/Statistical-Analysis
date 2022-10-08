@@ -1,0 +1,31 @@
+##loads data
+forbes <- read.table("P1-4.DAT")
+View(forbes)
+#A. Fit a Linear Regression Model
+#Add variable names to the columns
+colnames(forbes) <- c("Sales", "Profits", "Assets")
+##Setting the independent and dependent variables
+LinMod <- lm(Profits~Sales + Assets)
+summary(LinMod)
+##The fitted equation is y= 0.013 + 0.068 + 0.005
+#B. Analyze the residuals to check the adequacy of the model
+plot(LinMod)
+#compute the leverages for each data point
+lev <- as.data.frame(hatvalues(LinMod))
+##shows the leverage for each data point
+lev
+#plotting to see any visual outliers
+plot(lev)
+##none of the companies stand out as an outlier since their values are that
+great
+##compared to the rest of the data points
+#C. Generate a 95% prediction interval
+predict(LinMod, newdata=data.frame(Sales=100, Assets=500), int="pred")
+#D. Likelihood Ratio Test
+LinMod2 <- lm(Profits~Sales)
+#the actual test
+anova(LinMod, LinMod2)
+##we do not reject the null hypothesis since it is not less than the
+significance level
+##There is no need to modify the original model because there is no
+significant change
